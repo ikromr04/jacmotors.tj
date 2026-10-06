@@ -1,6 +1,6 @@
 @php($isPromotion = $post->type === \App\Enums\PostType::Promotion)
 
-<x-layout :title="$post->tr('title')" :description="$post->tr('excerpt')" :image="media($post->image)">
+<x-layout :title="$post->tr('title')" :description="$post->tr('excerpt')" :image="$post->image" type="article" :published-at="$post->published_at">
     <article>
         <header class="bg-surface">
             <div class="container-x max-w-4xl py-14 md:py-20">

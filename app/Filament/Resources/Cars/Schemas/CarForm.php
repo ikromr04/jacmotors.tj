@@ -74,8 +74,8 @@ class CarForm
                     ->minValue(0),
                 TextInput::make('sort')->label('Порядок')->numeric()->default(0),
                 Grid::make(1)->schema([
-                    Toggle::make('is_published')->label('Опубликована')->default(true),
-                    Toggle::make('is_featured')->label('Показывать на главной'),
+                    Toggle::make('is_published')->label('Опубликована')->default(true)
+                        ->helperText('Если выключить, модель пропадёт с сайта: из каталога, меню и форм заявок, а её страница перестанет открываться.'),
                 ])->columnSpan(1),
             ]),
             Translatable::tabs(fn (string $locale) => [
@@ -94,7 +94,8 @@ class CarForm
                     ->downloadable(),
                 TextInput::make('tour_url')
                     ->label('Ссылка на 3D-тур салона')
-                    ->url()
+                    ->helperText('Полная ссылка (https://…) или путь к туру, сохранённому на сайте, например tours/jac-t8-pro/index.html')
+                    ->rule('regex:/^(https?:\/\/\S+|[\w\-\/.]+\.html?)$/i')
                     ->maxLength(255),
             ]),
         ];

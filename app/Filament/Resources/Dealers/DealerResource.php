@@ -54,9 +54,12 @@ class DealerResource extends Resource
             Textarea::make('map_embed')->label('Ссылка для встраивания карты (Яндекс/Google, src из iframe)')
                 ->rows(2)->columnSpanFull(),
             Grid::make(4)->columnSpanFull()->schema([
-                Toggle::make('has_sales')->label('Продажи')->default(true),
-                Toggle::make('has_service')->label('Сервис')->default(true),
-                Toggle::make('is_active')->label('Показывать')->default(true),
+                Toggle::make('has_sales')->label('Продажи')->default(true)
+                    ->helperText('Метка «Продажи» в карточке дилера на сайте.'),
+                Toggle::make('has_service')->label('Сервис')->default(true)
+                    ->helperText('Метка «Сервис» в карточке дилера. Только такие дилеры предлагаются в форме записи на сервис.'),
+                Toggle::make('is_active')->label('Показывать')->default(true)
+                    ->helperText('Если выключить, дилер исчезнет со страницы дилеров и из выбора дилера в формах заявок.'),
                 TextInput::make('sort')->label('Порядок')->numeric()->default(0),
             ]),
         ]);

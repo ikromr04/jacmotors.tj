@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('JAC Motors · Админка')
-            ->favicon(asset('favicon.svg'))
+            ->favicon(asset('favicon/favicon.ico'))
             ->colors([
                 'primary' => Color::Red,
             ])

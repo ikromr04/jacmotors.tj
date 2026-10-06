@@ -1,6 +1,7 @@
 @php($phone = setting('phone'))
 
-<section class="section pt-0">
+{{-- Sits right under a white section; pass "spaced" when the section above has a background. --}}
+<section @class(['section', 'pt-0' => ! ($spaced ?? false)])>
     <div class="container-x">
         <div class="relative overflow-hidden rounded-[2rem] bg-brand px-6 py-14 text-white md:px-16 md:py-20">
             <div class="pointer-events-none absolute -top-24 -right-24 size-96 rounded-full bg-white/10 blur-2xl"></div>

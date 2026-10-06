@@ -50,6 +50,18 @@ if (! function_exists('setting')) {
     }
 }
 
+if (! function_exists('site_text')) {
+    /**
+     * Interface text editable in the admin ("texts" setting), falling back to lang/{locale}/site.php.
+     */
+    function site_text(string $key): string
+    {
+        $locale = app()->getLocale();
+
+        return filled($text = setting("texts.{$key}.{$locale}")) ? $text : __("site.{$key}");
+    }
+}
+
 if (! function_exists('localized_url')) {
     /**
      * The current page URL in another locale.

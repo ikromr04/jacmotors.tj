@@ -55,7 +55,8 @@ class SlideResource extends Resource
             TextInput::make('link')->label('Ссылка')->maxLength(255),
             Grid::make(2)->schema([
                 TextInput::make('sort')->label('Порядок')->numeric()->default(0),
-                Toggle::make('is_active')->label('Показывать')->default(true)->inline(false),
+                Toggle::make('is_active')->label('Показывать')->default(true)->inline(false)
+                    ->helperText('Если выключить, баннер не будет показываться в слайдере на главной.'),
             ]),
         ]);
     }

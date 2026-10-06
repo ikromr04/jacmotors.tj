@@ -3,8 +3,8 @@
     $email = setting('email');
 @endphp
 
-<x-layout :title="__('site.support.title')" :description="__('site.support.text')">
-    <x-page-hero :title="__('site.support.title')" :text="__('site.support.text')" />
+<x-layout :title="site_text('support.title')" :description="site_text('support.text')">
+    <x-page-hero :title="site_text('support.title')" :text="site_text('support.text')" />
 
     <section class="section">
         <div class="container-x grid gap-12 lg:grid-cols-3">
@@ -13,7 +13,7 @@
             </div>
 
             <aside>
-                <h2 class="text-2xl font-extrabold tracking-tight">{{ __('site.support.contacts') }}</h2>
+                <h2 class="text-2xl font-extrabold tracking-tight">{{ site_text('support.contacts') }}</h2>
                 <ul class="mt-6 space-y-5">
                     @if ($phone)
                         <li class="flex gap-4">

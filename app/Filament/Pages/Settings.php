@@ -65,10 +65,12 @@ class Settings extends Page
                     TextInput::make('socials.tiktok')->label('TikTok')->url(),
                     TextInput::make('whatsapp')->label('WhatsApp (номер)')->tel(),
                 ]),
-                Section::make('Аналитика')->columns(2)->schema([
-                    TextInput::make('google_analytics_id')->label('Google Analytics ID')->placeholder('G-XXXXXXX'),
-                    TextInput::make('yandex_metrika_id')->label('Яндекс.Метрика ID')->numeric(),
-                ]),
+                Section::make('Аналитика')->columns(2)
+                    ->description('Счётчики подключаются только на рабочем сайте (APP_ENV=production), чтобы тестовые заходы не попадали в статистику.')
+                    ->schema([
+                        TextInput::make('google_analytics_id')->label('Google Analytics ID')->placeholder('G-XXXXXXX'),
+                        TextInput::make('yandex_metrika_id')->label('Яндекс.Метрика ID')->numeric(),
+                    ]),
             ]);
     }
 

@@ -29,7 +29,6 @@ class CarsTable
                     ->formatStateUsing(fn (Car $record) => $record->category?->tr('name', 'ru'))
                     ->badge(),
                 TextColumn::make('price_from')->label('Цена от')->numeric(thousandsSeparator: ' ')->suffix(' смн'),
-                ToggleColumn::make('is_featured')->label('На главной'),
                 ToggleColumn::make('is_published')->label('Опубликована'),
             ])
             ->filters([

@@ -5,8 +5,11 @@ namespace Tests\Feature;
 use App\Enums\PostType;
 use App\Models\Car;
 use App\Models\Post;
+use App\Models\Setting;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -110,5 +113,34 @@ class SiteTest extends TestCase
             ->assertHeader('Content-Type', 'application/xml')
             ->assertSee(url('/tg/models/jac-t9'), false)
             ->assertSee(url('/en/about'), false);
+    }
+
+    public function test_pages_share_a_1200x630_jpeg_preview(): void
+    {
+        Storage::fake('public');
+        $hero = UploadedFile::fake()->image('hero.webp', 2500, 1175);
+        Car::query()->where('slug', 'jac-t6')->update(['hero_image' => $hero->storeAs('cars/hero', 'hero.webp', 'public')]);
+
+        $this->get('/en/about')->assertOk()
+            ->assertSee('<meta property="og:image" content="'.asset('images/og-default.jpg').'">', false)
+            ->assertSee('<meta property="og:locale:alternate" content="ru_RU">', false);
+
+        $html = $this->get('/en/models/jac-t6')->assertOk()->getContent();
+        preg_match('~<meta property="og:image" content="[^"]*/storage/(og/[^"]+\.jpg)">~', $html, $match);
+
+        $this->assertNotEmpty($match, 'The model page should share its own generated preview.');
+        [$width, $height, $type] = getimagesize(Storage::disk('public')->path($match[1]));
+        $this->assertSame([1200, 630, IMAGETYPE_JPEG], [$width, $height, $type]);
+    }
+
+    public function test_analytics_counters_load_only_in_production(): void
+    {
+        Setting::put(['google_analytics_id' => 'G-TEST123', 'yandex_metrika_id' => '12345678']);
+
+        $this->get('/ru')->assertOk()->assertDontSee('googletagmanager.com', false)->assertDontSee('mc.yandex.ru', false);
+
+        $this->app['env'] = 'production';
+
+        $this->get('/ru')->assertOk()->assertSee('gtag/js?id=G-TEST123', false)->assertSee('mc.yandex.ru/metrika/tag.js', false);
     }
 }

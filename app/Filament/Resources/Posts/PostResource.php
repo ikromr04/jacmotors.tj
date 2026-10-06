@@ -67,7 +67,8 @@ class PostResource extends Resource
                 DateTimePicker::make('published_at')->label('Дата публикации')->default(now()),
                 DatePicker::make('ends_at')->label('Акция действует до')
                     ->visible(fn ($get) => $get('type') === PostType::Promotion || $get('type') === PostType::Promotion->value),
-                Toggle::make('is_published')->label('Опубликовано')->default(true)->inline(false),
+                Toggle::make('is_published')->label('Опубликовано')->default(true)->inline(false)
+                    ->helperText('Если выключить, публикация скрыта с сайта. С датой в будущем она появится сама в этот день.'),
             ]),
         ]);
     }

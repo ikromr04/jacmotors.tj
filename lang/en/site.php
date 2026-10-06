@@ -42,14 +42,9 @@ return [
         'services' => 'Our services',
         'promotions' => 'Special offers',
         'news' => 'News',
-        'why' => 'Why JAC',
-        'why_items' => [
-            ['title' => 'Up to 5-year warranty', 'text' => 'Official manufacturer warranty of up to 150,000 km.'],
-            ['title' => 'Genuine parts', 'text' => 'Service at an official dealer with genuine components.'],
-            ['title' => 'Since 1964', 'text' => 'Over 60 years of experience and sales in 120+ countries.'],
-            ['title' => 'Loans and instalments', 'text' => 'We will help you find a convenient way to buy.'],
-        ],
     ],
+
+    'guarantee' => ['text' => 'Official manufacturer warranty of up to 150,000 km.'],
 
     'services' => [
         'test_drive' => ['title' => 'Test drive', 'text' => 'Feel the car in action — book a ride.'],
@@ -72,6 +67,7 @@ return [
         'cta_title' => 'Interested in the :name?',
         'cta_text' => 'Leave a request and a manager will contact you about trims, prices and purchase options.',
         'manual' => 'Owner’s manual',
+        'regulation' => 'Maintenance schedule',
     ],
 
     'posts' => [

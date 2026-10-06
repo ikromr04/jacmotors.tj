@@ -15,7 +15,8 @@
         </span>
     </div>
 
-    <div class="relative my-6 aspect-[16/9]">
+    {{-- pointer-events-none: let clicks on the photo reach the card link stretched over the card. --}}
+    <div class="pointer-events-none relative my-6 aspect-[16/9]">
         @if ($car->card_image)
             <img
                 src="{{ media($car->card_image) }}"

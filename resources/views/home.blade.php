@@ -59,8 +59,8 @@
                 <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                     <div>
                         <p class="eyebrow">JAC Motors</p>
-                        <h2 class="h-section mt-3">{{ __('site.home.lineup') }}</h2>
-                        <p class="mt-4 max-w-xl text-ink/60">{{ __('site.home.lineup_text') }}</p>
+                        <h2 class="h-section mt-3">{{ site_text('home.lineup') }}</h2>
+                        <p class="mt-4 max-w-xl text-ink/60">{{ site_text('home.lineup_text') }}</p>
                     </div>
                     <div class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0" role="tablist">
                         <button type="button" role="tab" class="btn shrink-0 !py-2.5" x-bind:class="tab === 'all' ? 'btn-dark' : 'bg-surface hover:bg-line'" x-on:click="tab = 'all'">
@@ -92,7 +92,7 @@
     {{-- Services --}}
     <section class="section bg-surface">
         <div class="container-x">
-            <h2 class="h-section">{{ __('site.home.services') }}</h2>
+            <h2 class="h-section">{{ site_text('home.services') }}</h2>
             <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
                     ['key' => 'test_drive', 'icon' => 'steering', 'modal' => 'test_drive'],
@@ -108,8 +108,8 @@
                         <span class="grid size-14 place-items-center rounded-2xl bg-brand-50 text-brand transition group-hover:bg-brand group-hover:text-white">
                             <x-glyph :name="$service['icon']" class="size-7" />
                         </span>
-                        <span class="mt-8 text-xl font-extrabold">{{ __("site.services.{$service['key']}.title") }}</span>
-                        <span class="mt-2 text-sm text-ink/60">{{ __("site.services.{$service['key']}.text") }}</span>
+                        <span class="mt-8 text-xl font-extrabold">{{ site_text("services.{$service['key']}.title") }}</span>
+                        <span class="mt-2 text-sm text-ink/60">{{ site_text("services.{$service['key']}.text") }}</span>
                         <span class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
                             {{ __('site.actions.more') }} <x-glyph name="arrow-right" class="size-4 transition group-hover:translate-x-1" />
                         </span>
@@ -124,7 +124,7 @@
         <section class="section">
             <div class="container-x">
                 <div class="flex items-end justify-between gap-6">
-                    <h2 class="h-section">{{ __('site.home.promotions') }}</h2>
+                    <h2 class="h-section">{{ site_text('home.promotions') }}</h2>
                     <a href="{{ route('promotions.index') }}" class="link-arrow shrink-0">{{ __('site.actions.view_all') }} <x-glyph name="arrow-right" class="size-4" /></a>
                 </div>
                 <div class="mt-10 grid gap-6 md:grid-cols-3">
@@ -136,34 +136,12 @@
         </section>
     @endif
 
-    {{-- Why JAC --}}
-    <section class="section bg-ink text-white">
-        <div class="container-x">
-            <div class="grid gap-12 lg:grid-cols-3">
-                <div>
-                    <p class="eyebrow">JAC Motors</p>
-                    <h2 class="h-section mt-3">{{ __('site.home.why') }}</h2>
-                    <a href="{{ route('pages.show', 'about') }}" class="btn btn-ghost-light mt-8">{{ __('site.nav.about') }}</a>
-                </div>
-                <div class="grid gap-px overflow-hidden rounded-3xl bg-white/10 sm:grid-cols-2 lg:col-span-2">
-                    @foreach (__('site.home.why_items') as $item)
-                        <div class="bg-ink p-8">
-                            <p class="text-4xl font-extrabold text-brand">0{{ $loop->iteration }}</p>
-                            <p class="mt-6 text-lg font-bold">{{ $item['title'] }}</p>
-                            <p class="mt-2 text-sm text-white/60">{{ $item['text'] }}</p>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </section>
-
     {{-- News --}}
     @if ($news->isNotEmpty())
         <section class="section">
             <div class="container-x">
                 <div class="flex items-end justify-between gap-6">
-                    <h2 class="h-section">{{ __('site.home.news') }}</h2>
+                    <h2 class="h-section">{{ site_text('home.news') }}</h2>
                     <a href="{{ route('news.index') }}" class="link-arrow shrink-0">{{ __('site.actions.view_all') }} <x-glyph name="arrow-right" class="size-4" /></a>
                 </div>
                 <div class="mt-10 grid gap-6 md:grid-cols-3">
@@ -175,5 +153,6 @@
         </section>
     @endif
 
-    @include('partials.cta')
+    {{-- Without promotions and news the grey services block is right above. --}}
+    @include('partials.cta', ['spaced' => $promotions->isEmpty() && $news->isEmpty()])
 </x-layout>

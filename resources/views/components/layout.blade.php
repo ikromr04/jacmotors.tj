@@ -1,7 +1,12 @@
 @props([
     'title' => null,
     'description' => null,
+    // Social preview: a file on the public disk (or an absolute URL); the branded default otherwise.
     'image' => null,
+    // Fit the whole image with margins instead of cropping it (cut-out car pictures).
+    'imageContain' => false,
+    'type' => 'website',
+    'publishedAt' => null,
     'overlayHeader' => false,
 ])
 
@@ -9,7 +14,7 @@
     $siteName = __('site.brand');
     $fullTitle = $title ? "{$title} — {$siteName}" : $siteName.' — '.__('site.distributor');
     $description = Str::limit(strip_tags($description ?? __('site.distributor')), 160);
-    $ogImage = $image ?: asset('favicon/apple-touch-icon.png');
+    $ogImage = \App\Support\OgImage::url($image, $imageContain);
     $ogLocales = ['ru' => 'ru_RU', 'tg' => 'tg_TJ', 'en' => 'en_US'];
 @endphp
 
@@ -30,17 +35,32 @@
         @endforeach
         <link rel="alternate" hreflang="x-default" href="{{ localized_url(config('app.locale')) }}">
 
-        <meta property="og:type" content="website">
+        <meta property="og:type" content="{{ $type }}">
         <meta property="og:site_name" content="{{ $siteName }}">
         <meta property="og:title" content="{{ $title ?? $siteName }}">
         <meta property="og:description" content="{{ $description }}">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image" content="{{ $ogImage }}">
+        <meta property="og:image:type" content="image/jpeg">
+        <meta property="og:image:width" content="{{ \App\Support\OgImage::WIDTH }}">
+        <meta property="og:image:height" content="{{ \App\Support\OgImage::HEIGHT }}">
+        <meta property="og:image:alt" content="{{ $title ?? $siteName }}">
         <meta property="og:locale" content="{{ $ogLocales[app()->getLocale()] ?? 'ru_RU' }}">
+        @foreach (array_diff_key($ogLocales, [app()->getLocale() => true]) as $ogLocale)
+            <meta property="og:locale:alternate" content="{{ $ogLocale }}">
+        @endforeach
+        @if ($type === 'article' && $publishedAt)
+            <meta property="article:published_time" content="{{ $publishedAt->toAtomString() }}">
+        @endif
         <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $title ?? $siteName }}">
+        <meta name="twitter:description" content="{{ $description }}">
+        <meta name="twitter:image" content="{{ $ogImage }}">
 
-        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+        {{-- Same set and order as the previous site: browsers that take the last icon get the .ico. --}}
         <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon/favicon-96x96.png') }}">
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon/favicon.svg') }}">
+        <link rel="shortcut icon" href="{{ asset('favicon/favicon.ico') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}">
         <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
 
@@ -48,7 +68,7 @@
 
         {{ $head ?? '' }}
 
-        @if ($gaId = setting('google_analytics_id'))
+        @if (app()->isProduction() && $gaId = setting('google_analytics_id'))
             <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
             <script>
                 window.dataLayer = window.dataLayer || [];
@@ -57,7 +77,7 @@
                 gtag('config', @js($gaId));
             </script>
         @endif
-        @if ($ymId = setting('yandex_metrika_id'))
+        @if (app()->isProduction() && $ymId = setting('yandex_metrika_id'))
             <script>
                 window.ymId = @js((int) $ymId);
                 (function (m, e, t, r, i, k, a) {

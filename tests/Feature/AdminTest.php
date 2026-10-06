@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Filament\Pages\Settings;
+use App\Filament\Pages\SiteTexts;
 use App\Filament\Resources\Cars\Pages\EditCar;
 use App\Models\Car;
 use App\Models\Dealer;
@@ -53,7 +54,7 @@ class AdminTest extends TestCase
             '/admin/posts', '/admin/posts/create',
             '/admin/pages', '/admin/pages/'.Page::query()->value('id').'/edit',
             '/admin/documents', '/admin/documents/create',
-            '/admin/users', '/admin/settings',
+            '/admin/users', '/admin/settings', '/admin/texts',
         ];
 
         foreach ($urls as $url) {
@@ -79,6 +80,24 @@ class AdminTest extends TestCase
         $this->assertSame(350000, (int) $car->price_from);
     }
 
+    public function test_car_tour_can_be_a_link_or_a_local_path_only(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $car = Car::query()->firstWhere('slug', 'jac-t6');
+
+        Livewire::test(EditCar::class, ['record' => $car->getRouteKey()])
+            ->fillForm(['tour_url' => 'javascript:alert(1)'])
+            ->call('save')
+            ->assertHasFormErrors(['tour_url']);
+
+        Livewire::test(EditCar::class, ['record' => $car->getRouteKey()])
+            ->fillForm(['tour_url' => 'tours/jac-t6/index.html'])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->get('/ru/models/jac-t6')->assertOk()->assertSee('/storage/tours/jac-t6/index.html');
+    }
+
     public function test_settings_are_saved(): void
     {
         $this->actingAs(User::factory()->create());
@@ -90,5 +109,25 @@ class AdminTest extends TestCase
 
         $this->assertSame('+992 00 000 00 00', Setting::get('phone'));
         $this->assertSame('a@b.tj', Setting::get('lead_emails'));
+    }
+
+    public function test_site_texts_are_edited_in_the_admin(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        Livewire::test(SiteTexts::class)
+            ->assertSet('data.home.lineup.ru', 'Модельный ряд')
+            ->fillForm([
+                'home' => ['lineup' => ['ru' => 'Наши автомобили', 'tg' => '']],
+                'services' => ['support' => ['title' => ['ru' => 'Помощь']]],
+                'support' => ['text' => ['ru' => 'Ответим в течение часа.']],
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->get('/ru')->assertOk()->assertSee('Наши автомобили')->assertSee('Помощь')->assertDontSee('Модельный ряд');
+        $this->get('/ru/support')->assertOk()->assertSee('Ответим в течение часа.');
+        // An emptied translation falls back to the language file.
+        $this->get('/tg')->assertOk()->assertSee(__('site.home.lineup', [], 'tg'));
     }
 }

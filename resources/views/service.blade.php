@@ -31,7 +31,7 @@
                     <x-glyph name="shield" class="size-10 text-brand" />
                     <span class="flex-1">
                         <span class="block text-lg font-bold">{{ __('site.nav.guarantee') }}</span>
-                        <span class="text-sm text-white/60">{{ __('site.home.why_items.0.text') }}</span>
+                        <span class="text-sm text-white/60">{{ __('site.guarantee.text') }}</span>
                     </span>
                     <x-glyph name="arrow-right" />
                 </a>

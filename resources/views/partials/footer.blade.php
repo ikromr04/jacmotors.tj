@@ -9,7 +9,9 @@
         <div class="lg:col-span-4">
             <x-logo.jac class="h-10 w-auto" />
             <p class="mt-6 max-w-sm text-sm text-white/60">{{ __('site.distributor') }}</p>
-            <x-logo.koinot class="mt-6 h-12 w-auto text-white/70" />
+            <a href="https://koinotauto.tj/" target="_blank" rel="noopener" class="mt-6 inline-block text-white/70 transition hover:text-white" aria-label="Koinot Auto">
+                <x-logo.koinot class="h-12 w-auto" />
+            </a>
         </div>
 
         <div class="lg:col-span-2">
@@ -43,7 +45,7 @@
         </div>
 
         <div class="lg:col-span-2">
-            <p class="mb-4 text-sm font-bold">{{ __('site.support.contacts') }}</p>
+            <p class="mb-4 text-sm font-bold">{{ site_text('support.contacts') }}</p>
             <ul class="space-y-3 text-sm">
                 @if ($phone)
                     <li><a href="tel:{{ preg_replace('/[^\d+]/', '', $phone) }}" class="text-lg font-bold transition hover:text-brand">{{ $phone }}</a></li>

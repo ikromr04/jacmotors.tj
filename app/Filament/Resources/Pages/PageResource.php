@@ -42,7 +42,8 @@ class PageResource extends Resource
         return $schema->columns(2)->components([
             TextInput::make('slug')->label('URL')->required()->disabled(fn (string $operation) => $operation === 'edit')
                 ->helperText('Поддерживаются: about, guarantee, privacy'),
-            Toggle::make('is_published')->label('Опубликована')->default(true)->inline(false),
+            Toggle::make('is_published')->label('Опубликована')->default(true)->inline(false)
+                ->helperText('Если выключить, страница перестанет открываться на сайте.'),
             Translatable::tabs(fn (string $locale, bool $default) => [
                 TextInput::make("title.{$locale}")->label('Заголовок')->required($default),
                 RichEditor::make("body.{$locale}")->label('Текст'),

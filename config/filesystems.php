@@ -41,7 +41,9 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            // Relative, so uploaded files load on whatever host the site is opened on
+            // (the admin's upload fields fetch them via JS and would hit CORS on another host).
+            'url' => '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

@@ -16,7 +16,8 @@
 <x-layout
     :title="$car->tr('meta_title') ?? $car->name"
     :description="$car->tr('meta_description') ?? $car->tr('excerpt') ?? $car->tr('tagline')"
-    :image="media($car->hero_image ?? $car->card_image)"
+    :image="$car->hero_image ?? $car->card_image"
+    :image-contain="! $car->hero_image"
     :overlay-header="(bool) $car->hero_image"
 >
     {{-- Hero --}}
@@ -92,7 +93,7 @@
                             @foreach ($colors as $color)
                                 <button
                                     type="button"
-                                    class="size-9 rounded-full ring-2 ring-offset-4 transition"
+                                    class="size-9 rounded-full border border-black/15 ring-2 ring-offset-4 transition"
                                     style="background: {{ preg_match('/^#[0-9a-f]{3,8}$/i', $color['hex'] ?? '') ? $color['hex'] : '#ccc' }}"
                                     x-bind:class="active === {{ $loop->index }} ? 'ring-ink' : 'ring-transparent hover:ring-line'"
                                     x-on:click="active = {{ $loop->index }}"
@@ -127,7 +128,7 @@
                     @endif
                     @foreach ($car->documents as $document)
                         <a href="{{ media($document->file) }}" target="_blank" rel="noopener" class="btn btn-outline">
-                            <x-glyph name="download" class="size-4" /> {{ __('site.car.manual') }}
+                            <x-glyph name="download" class="size-4" /> {{ __("site.car.{$document->type->value}") }}
                         </a>
                     @endforeach
                 </div>
@@ -141,7 +142,7 @@
             <div class="container-x">
                 <div x-data="{ loaded: false }" class="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-ink sm:aspect-[16/9]">
                     <template x-if="loaded">
-                        <iframe src="{{ $car->tour_url }}" class="absolute inset-0 size-full" allowfullscreen loading="lazy" title="{{ __('site.car.tour') }}"></iframe>
+                        <iframe src="{{ media($car->tour_url) }}" class="absolute inset-0 size-full" allowfullscreen loading="lazy" title="{{ __('site.car.tour') }}"></iframe>
                     </template>
                     <div x-show="!loaded" class="absolute inset-0 grid place-items-center text-center text-white">
                         @if ($car->hero_image)
@@ -288,7 +289,7 @@
                         <img src="{{ media($car->card_image) }}" alt="{{ $car->name }}" loading="lazy" class="mt-auto hidden w-full max-w-md pt-10 lg:block">
                     @endif
                 </div>
-                <div class="rounded-3xl bg-white p-6 text-ink md:p-8" x-data x-init="$nextTick(() => { const s = $el.querySelector('[name=car_id]'); if (s) s.value = '{{ $car->id }}' })">
+                <div class="self-center rounded-3xl bg-white p-6 text-ink md:p-8" x-data x-init="$nextTick(() => { const s = $el.querySelector('[name=car_id]'); if (s) s.value = '{{ $car->id }}' })">
                     <x-lead-form type="purchase" :cars="$navCars" />
                 </div>
             </div>
