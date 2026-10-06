@@ -29,11 +29,13 @@
     }"
 >
     <div class="container-x flex h-16 items-center gap-6 lg:h-20">
-        <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="{{ __('site.brand') }}">
+        <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-3" aria-label="{{ __('site.brand') }}">
+            <x-logo.koinot class="h-8 w-auto lg:h-10" />
+            <span class="h-6 w-px bg-current opacity-25 lg:h-7" aria-hidden="true"></span>
             <x-logo.jac class="h-8 w-auto lg:h-9" />
         </a>
 
-        <nav class="hidden flex-1 items-center gap-1 lg:flex" aria-label="{{ __('site.nav.menu') }}">
+        <nav class="hidden flex-1 items-center gap-1 whitespace-nowrap xl:flex" aria-label="{{ __('site.nav.menu') }}">
             {{-- Models mega menu --}}
             <div class="group/mega" x-data="{ open: false }" x-on:mouseenter="open = true" x-on:mouseleave="open = false">
                 <a
@@ -104,9 +106,9 @@
             </div>
         </nav>
 
-        <div class="ml-auto flex items-center gap-2 lg:gap-4">
+        <div class="ml-auto flex shrink-0 items-center gap-2 whitespace-nowrap lg:gap-4">
             @if ($phone)
-                <a href="tel:{{ preg_replace('/[^\d+]/', '', $phone) }}" class="hidden items-center gap-2 text-sm font-bold xl:flex">
+                <a href="tel:{{ preg_replace('/[^\d+]/', '', $phone) }}" class="hidden items-center gap-2 text-sm font-bold min-[90rem]:flex">
                     <x-glyph name="phone" class="size-4" /> {{ $phone }}
                 </a>
             @endif
@@ -134,7 +136,7 @@
                 {{ __('site.actions.test_drive') }}
             </button>
 
-            <button type="button" class="-mr-2 p-2 lg:hidden" x-on:click="menu = !menu" x-bind:aria-expanded="menu" aria-label="{{ __('site.nav.menu') }}">
+            <button type="button" class="-mr-2 p-2 xl:hidden" x-on:click="menu = !menu" x-bind:aria-expanded="menu" aria-label="{{ __('site.nav.menu') }}">
                 <x-glyph name="menu" class="size-6" x-show="!menu" />
                 <x-glyph name="x" class="size-6" x-cloak x-show="menu" />
             </button>
@@ -142,7 +144,7 @@
     </div>
 
     {{-- Mobile menu --}}
-    <div x-cloak x-show="menu" x-transition.opacity class="absolute inset-x-0 top-full h-[calc(100dvh-4rem)] overflow-y-auto border-t border-line bg-white text-ink lg:hidden">
+    <div x-cloak x-show="menu" x-transition.opacity class="absolute inset-x-0 top-full h-[calc(100dvh-4rem)] overflow-y-auto border-t border-line bg-white text-ink lg:h-[calc(100dvh-5rem)] xl:hidden">
         <nav class="container-x space-y-1 py-6">
             <div x-data="{ open: true }">
                 <button type="button" class="flex w-full items-center justify-between py-3 text-lg font-bold" x-on:click="open = !open">
