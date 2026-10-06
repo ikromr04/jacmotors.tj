@@ -1,0 +1,67 @@
+<?php
+
+return [
+    'titles' => [
+        'callback' => 'We’ll call you back',
+        'test_drive' => 'Book a test drive',
+        'purchase' => 'Purchase request',
+        'service' => 'Service booking',
+        'feedback' => 'Contact support',
+    ],
+    'subtitles' => [
+        'callback' => 'Leave your number and a manager will call you during business hours.',
+        'test_drive' => 'Choose a model and a convenient date — we will confirm by phone.',
+        'purchase' => 'Find out the price, trims and loan options.',
+        'service' => 'Tell us the model and your preferred visit date.',
+        'feedback' => 'Describe your question and we will get back to you.',
+    ],
+
+    'name' => 'Your name',
+    'phone' => 'Phone',
+    'email' => 'Email',
+    'car' => 'Model',
+    'choose_car' => 'Choose a model',
+    'dealer' => 'Dealership',
+    'choose_dealer' => 'Any',
+    'city' => 'City',
+    'subject' => 'Subject',
+    'choose_subject' => 'Choose a subject',
+    'payment_method' => 'Payment method',
+    'date' => 'Preferred date',
+    'message' => 'Message',
+    'consent' => 'By clicking “Send”, you agree to our :link',
+    'consent_link' => 'privacy policy',
+    'submit' => 'Send',
+    'sending' => 'Sending…',
+    'success_title' => 'Request sent!',
+    'success' => 'Thank you! We will contact you shortly.',
+    'error' => 'Could not send the request. Please check the fields or call us.',
+    'too_many' => 'Too many attempts. Please try again in a minute.',
+
+    'subjects' => [
+        'Thanks and feedback',
+        'Suggestion',
+        'Complaint',
+        'Question about a car',
+    ],
+    'payment_methods' => [
+        'Cash',
+        'Car loan',
+        'Instalments',
+        'Trade-in',
+    ],
+
+    'attributes' => [
+        'name' => 'name',
+        'phone' => 'phone',
+        'email' => 'email',
+        'car_id' => 'model',
+        'dealer_id' => 'dealer',
+        'city' => 'city',
+        'subject' => 'subject',
+        'payment_method' => 'payment method',
+        'preferred_date' => 'date',
+        'message' => 'message',
+        'consent' => 'consent',
+    ],
+];
