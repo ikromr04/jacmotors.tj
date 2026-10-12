@@ -206,6 +206,6 @@ class SiteTest extends TestCase
 
         $this->app['env'] = 'production';
 
-        $this->get('/')->assertOk()->assertSee('gtag/js?id=G-TEST123', false)->assertSee('mc.yandex.ru/metrika/tag.js', false);
+        $this->get('/')->assertOk()->assertSee('gtag/js?id=G-TEST123', false)->assertSee('mc.yandex.ru/metrika/tag.js', false)->assertSee('mc.yandex.ru/watch/12345678', false);
     }
 }
