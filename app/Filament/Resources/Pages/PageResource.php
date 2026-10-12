@@ -66,7 +66,7 @@ class PageResource extends Resource
                 Action::make('view')
                     ->label('На сайте')
                     ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
-                    ->url(fn (Page $record) => url("/ru/{$record->slug}"))
+                    ->url(fn (Page $record) => route('pages.show', ['locale' => 'ru', 'page' => $record->slug]))
                     ->openUrlInNewTab(),
                 EditAction::make(),
             ]);

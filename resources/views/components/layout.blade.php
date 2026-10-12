@@ -8,6 +8,10 @@
     'type' => 'website',
     'publishedAt' => null,
     'overlayHeader' => false,
+    // Keep the page out of search results (error pages).
+    'noindex' => false,
+    // Extra schema.org nodes for this page, published next to the dealer description.
+    'schema' => [],
 ])
 
 @php
@@ -16,6 +20,25 @@
     $description = Str::limit(strip_tags($description ?? __('site.distributor')), 160);
     $ogImage = \App\Support\OgImage::url($image, $imageContain);
     $ogLocales = ['ru' => 'ru_RU', 'tg' => 'tg_TJ', 'en' => 'en_US'];
+    // Tracking parameters and ?page=1 must not create duplicates; later list pages are pages of their own.
+    $page = (int) request()->query('page');
+    $canonical = $page > 1 ? url()->current().'?page='.$page : url()->current();
+
+    $dealer = array_filter([
+        '@type' => 'AutoDealer',
+        '@id' => route('home').'#dealer',
+        'name' => $siteName,
+        'description' => __('site.distributor'),
+        'url' => route('home'),
+        'logo' => asset('favicon/apple-touch-icon.png'),
+        'image' => asset('images/og-default.jpg'),
+        'telephone' => setting('phone'),
+        'email' => setting('email'),
+        'address' => tr(setting('address')),
+        'brand' => ['@type' => 'Brand', 'name' => 'JAC'],
+        'sameAs' => array_values(array_filter((array) setting('socials', []))) ?: null,
+    ]);
+    $structuredData = ['@context' => 'https://schema.org', '@graph' => [$dealer, ...$schema]];
 @endphp
 
 <!DOCTYPE html>
@@ -29,17 +52,21 @@
 
         <title>{{ $fullTitle }}</title>
         <meta name="description" content="{{ $description }}">
-        <link rel="canonical" href="{{ url()->current() }}">
-        @foreach (config('app.locales') as $locale => $name)
-            <link rel="alternate" hreflang="{{ $locale }}" href="{{ localized_url($locale) }}">
-        @endforeach
-        <link rel="alternate" hreflang="x-default" href="{{ localized_url(config('app.locale')) }}">
+        @if ($noindex)
+            <meta name="robots" content="noindex, follow">
+        @else
+            <link rel="canonical" href="{{ $canonical }}">
+            @foreach (config('app.locales') as $locale => $name)
+                <link rel="alternate" hreflang="{{ $locale }}" href="{{ localized_url($locale) }}">
+            @endforeach
+            <link rel="alternate" hreflang="x-default" href="{{ localized_url(config('app.locale')) }}">
+        @endif
 
         <meta property="og:type" content="{{ $type }}">
         <meta property="og:site_name" content="{{ $siteName }}">
         <meta property="og:title" content="{{ $title ?? $siteName }}">
         <meta property="og:description" content="{{ $description }}">
-        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:url" content="{{ $canonical }}">
         <meta property="og:image" content="{{ $ogImage }}">
         <meta property="og:image:type" content="image/jpeg">
         <meta property="og:image:width" content="{{ \App\Support\OgImage::WIDTH }}">
@@ -65,6 +92,8 @@
         <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
 
         {{ $head ?? '' }}
 

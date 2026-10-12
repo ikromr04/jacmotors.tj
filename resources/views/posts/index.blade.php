@@ -1,6 +1,9 @@
-@php($title = $type === \App\Enums\PostType::Promotion ? __('site.posts.promotions') : __('site.posts.news'))
+@php
+    $isPromotion = $type === \App\Enums\PostType::Promotion;
+    $title = $isPromotion ? __('site.posts.promotions') : __('site.posts.news');
+@endphp
 
-<x-layout :title="$title">
+<x-layout :title="$title" :description="$isPromotion ? __('site.posts.promotions_text') : __('site.posts.news_text')">
     <x-page-hero :title="$title" />
 
     <section class="section">

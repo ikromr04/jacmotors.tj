@@ -1,12 +1,12 @@
 @php
-    // Error pages outside the locale prefix still need a language and URL defaults for links.
-    $locale = (string) request()->segment(1);
-    $locale = array_key_exists($locale, config('app.locales')) ? $locale : config('app.locale');
+    // A 404 may come before SetLocale has run: take the language from the /tj or /en prefix, Russian otherwise.
+    $locale = collect(array_keys(config('app.locales')))
+        ->first(fn ($locale) => locale_prefix($locale) !== '' && locale_prefix($locale) === request()->segment(1))
+        ?? config('app.locale');
     app()->setLocale($locale);
-    URL::defaults(['locale' => $locale]);
 @endphp
 
-<x-layout :title="__('site.errors.404')">
+<x-layout :title="__('site.errors.404')" noindex>
     <section class="section">
         <div class="container-x py-16 text-center">
             <p class="text-8xl font-extrabold text-brand md:text-9xl">404</p>

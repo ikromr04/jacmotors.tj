@@ -1,6 +1,19 @@
-@php($isPromotion = $post->type === \App\Enums\PostType::Promotion)
+@php
+    $isPromotion = $post->type === \App\Enums\PostType::Promotion;
+    $schema = array_filter([
+        '@type' => 'NewsArticle',
+        'headline' => $post->tr('title'),
+        'description' => strip_tags($post->tr('excerpt') ?? ''),
+        'image' => $post->image ? media($post->image) : null,
+        'datePublished' => $post->published_at?->toAtomString(),
+        'dateModified' => $post->updated_at?->toAtomString(),
+        'mainEntityOfPage' => url()->current(),
+        'author' => ['@id' => route('home').'#dealer'],
+        'publisher' => ['@id' => route('home').'#dealer'],
+    ]);
+@endphp
 
-<x-layout :title="$post->tr('title')" :description="$post->tr('excerpt')" :image="$post->image" type="article" :published-at="$post->published_at">
+<x-layout :title="$post->tr('title')" :description="$post->tr('excerpt')" :image="$post->image" type="article" :published-at="$post->published_at" :schema="[$schema]">
     <article>
         <header class="bg-surface">
             <div class="container-x max-w-4xl py-14 md:py-20">

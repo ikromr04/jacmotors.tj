@@ -78,20 +78,26 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'ru'),
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'ru'),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
     /*
-    | Site languages: URL prefix => native name. The first one is the default.
+    | Site languages: language code => native name. The default one (app.locale) has no URL prefix,
+    | the others use their code unless locale_prefixes says otherwise.
     */
 
     'locales' => [
         'ru' => 'Русский',
         'tg' => 'Тоҷикӣ',
         'en' => 'English',
+    ],
+
+    // Tajik pages live under /tj (the country), while "tg" stays the language code for hreflang and translations.
+    'locale_prefixes' => [
+        'tg' => 'tj',
     ],
 
     /*

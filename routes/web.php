@@ -9,43 +9,69 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\SetLocale;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    $preferred = request()->getPreferredLanguage(array_keys(config('app.locales')));
-
-    return redirect()->route('home', ['locale' => $preferred ?: config('app.locale')]);
-});
-
 Route::get('sitemap.xml', SitemapController::class)->name('sitemap');
+
+Route::get('robots.txt', fn () => response(implode("\n", [
+    'User-agent: *',
+    'Disallow: /admin',
+    '',
+    'Sitemap: '.route('sitemap'),
+])."\n")->header('Content-Type', 'text/plain; charset=UTF-8'))->name('robots');
 
 Route::post('leads', [LeadController::class, 'store'])
     ->middleware('throttle:leads')
     ->name('leads.store');
 
-Route::prefix('{locale}')
-    ->where(['locale' => implode('|', array_keys(config('app.locales')))])
-    ->middleware(SetLocale::class)
-    ->group(function () {
-        Route::get('/', HomeController::class)->name('home');
+/*
+| Public pages: the main language (Russian) lives at the root, the others under /tj and /en.
+| Each copy is named after its language ("ru.home", "tg.home"); route('home') picks the current one,
+| see AppServiceProvider.
+*/
+$pages = function () {
+    Route::get('/', HomeController::class)->name('home');
 
-        Route::get('models', [CarController::class, 'index'])->name('cars.index');
-        Route::get('models/{car}', [CarController::class, 'show'])->name('cars.show');
+    Route::get('models', [CarController::class, 'index'])->name('cars.index');
+    Route::get('models/{car}', [CarController::class, 'show'])->name('cars.show');
 
-        Route::get('promotions', [PostController::class, 'promotions'])->name('promotions.index');
-        Route::get('promotions/{post}', [PostController::class, 'showPromotion'])->name('promotions.show');
-        Route::get('news', [PostController::class, 'news'])->name('news.index');
-        Route::get('news/{post}', [PostController::class, 'showNews'])->name('news.show');
+    Route::get('promotions', [PostController::class, 'promotions'])->name('promotions.index');
+    Route::get('promotions/{post}', [PostController::class, 'showPromotion'])->name('promotions.show');
+    Route::get('news', [PostController::class, 'news'])->name('news.index');
+    Route::get('news/{post}', [PostController::class, 'showNews'])->name('news.show');
 
-        Route::get('dealers', DealerController::class)->name('dealers');
-        Route::get('service', [DocumentController::class, 'service'])->name('service');
-        Route::get('manuals', [DocumentController::class, 'manuals'])->name('manuals');
-        Route::get('support', [PageController::class, 'support'])->name('support');
+    Route::get('dealers', DealerController::class)->name('dealers');
+    Route::get('service', [DocumentController::class, 'service'])->name('service');
+    Route::get('manuals', [DocumentController::class, 'manuals'])->name('manuals');
+    Route::get('support', [PageController::class, 'support'])->name('support');
 
-        Route::get('{page:slug}', [PageController::class, 'show'])
-            ->whereIn('page', ['about', 'guarantee', 'privacy'])
-            ->name('pages.show');
-    });
+    Route::get('{page:slug}', [PageController::class, 'show'])
+        ->whereIn('page', ['about', 'guarantee', 'privacy'])
+        ->name('pages.show');
+};
+
+foreach (array_keys(config('app.locales')) as $locale) {
+    Route::prefix(locale_prefix($locale))
+        ->name("{$locale}.")
+        ->middleware(SetLocale::class.':'.$locale)
+        ->group($pages);
+}
+
+/*
+| Former language prefixes: Russian pages used to live under /ru, Tajik ones under /tg.
+*/
+foreach (array_keys(config('app.locales')) as $locale) {
+    if (($prefix = locale_prefix($locale)) === $locale) {
+        continue;
+    }
+
+    Route::get($locale.'/{path?}', function (Request $request, string $path = '') use ($prefix) {
+        $query = $request->getQueryString();
+
+        return redirect('/'.trim("{$prefix}/{$path}", '/').($query ? "?{$query}" : ''), 301);
+    })->where('path', '.*');
+}
 
 /*
 | Old URLs of the previous site, kept for search engines and bookmarks.
@@ -58,12 +84,9 @@ $legacyCars = [
 ];
 
 foreach ($legacyCars as $old => $slug) {
-    Route::permanentRedirect($old, "/ru/models/{$slug}");
+    Route::permanentRedirect($old, "/models/{$slug}");
 }
 
-foreach ([
-    'about' => '/ru/about', 'guarantee' => '/ru/guarantee', 'models' => '/ru/models', 'news' => '/ru/news',
-    'promotions' => '/ru/promotions', 'feedback' => '/ru/support', 'manuals' => '/ru/manuals', 'regulations' => '/ru/service',
-] as $old => $new) {
+foreach (['feedback' => '/support', 'regulations' => '/service'] as $old => $new) {
     Route::permanentRedirect($old, $new);
 }

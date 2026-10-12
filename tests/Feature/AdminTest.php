@@ -95,7 +95,7 @@ class AdminTest extends TestCase
             ->call('save')
             ->assertHasNoFormErrors();
 
-        $this->get('/ru/models/jac-t6')->assertOk()->assertSee('/storage/tours/jac-t6/index.html');
+        $this->get('/models/jac-t6')->assertOk()->assertSee('/storage/tours/jac-t6/index.html');
     }
 
     public function test_settings_are_saved(): void
@@ -125,9 +125,9 @@ class AdminTest extends TestCase
             ->call('save')
             ->assertHasNoFormErrors();
 
-        $this->get('/ru')->assertOk()->assertSee('Наши автомобили')->assertSee('Помощь')->assertDontSee('Модельный ряд');
-        $this->get('/ru/support')->assertOk()->assertSee('Ответим в течение часа.');
+        $this->get('/')->assertOk()->assertSee('Наши автомобили')->assertSee('Помощь')->assertDontSee('Модельный ряд');
+        $this->get('/support')->assertOk()->assertSee('Ответим в течение часа.');
         // An emptied translation falls back to the language file.
-        $this->get('/tg')->assertOk()->assertSee(__('site.home.lineup', [], 'tg'));
+        $this->get('/tj')->assertOk()->assertSee(__('site.home.lineup', [], 'tg'));
     }
 }

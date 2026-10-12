@@ -2,6 +2,7 @@
     {{-- Hero --}}
     @if ($slides->isNotEmpty())
         <section x-data="heroSlider" class="relative h-[100svh] min-h-[620px] overflow-hidden bg-ink text-white">
+            <h1 class="sr-only">{{ __('site.brand') }} — {{ __('site.distributor') }}</h1>
             <div x-ref="swiper" class="swiper h-full">
                 <div class="swiper-wrapper">
                     @foreach ($slides as $slide)

@@ -11,9 +11,27 @@
         'specs' => $specGroups->isNotEmpty() ? __('site.car.specs') : null,
         'gallery' => $gallery ? __('site.car.gallery') : null,
     ]);
+    $schema = array_filter([
+        // Google expects an offer on every Product, so models without a price are described as a car only.
+        '@type' => $car->price_from ? ['Product', 'Car'] : 'Car',
+        'name' => $car->name,
+        'description' => strip_tags($car->tr('excerpt') ?? $car->tr('tagline') ?? ''),
+        'url' => route('cars.show', $car),
+        'image' => $hero ? media($hero) : null,
+        'brand' => ['@type' => 'Brand', 'name' => 'JAC'],
+        'category' => $car->category?->tr('name'),
+        'offers' => $car->price_from ? [
+            '@type' => 'Offer',
+            'price' => $car->price_from,
+            'priceCurrency' => 'TJS',
+            'url' => route('cars.show', $car),
+            'seller' => ['@id' => route('home').'#dealer'],
+        ] : null,
+    ]);
 @endphp
 
 <x-layout
+    :schema="[$schema]"
     :title="$car->tr('meta_title') ?? $car->name"
     :description="$car->tr('meta_description') ?? $car->tr('excerpt') ?? $car->tr('tagline')"
     :image="$car->hero_image ?? $car->card_image"

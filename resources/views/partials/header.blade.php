@@ -2,9 +2,9 @@
     $phone = setting('phone');
     $carsByCategory = $navCars->groupBy(fn ($car) => $car->category?->tr('name') ?? '');
     $links = [
-        ['label' => __('site.nav.promotions'), 'url' => route('promotions.index'), 'active' => request()->routeIs('promotions.*')],
-        ['label' => __('site.nav.service'), 'url' => route('service'), 'active' => request()->routeIs('service')],
-        ['label' => __('site.nav.dealers'), 'url' => route('dealers'), 'active' => request()->routeIs('dealers')],
+        ['label' => __('site.nav.promotions'), 'url' => route('promotions.index'), 'active' => request()->routeIs('*.promotions.*')],
+        ['label' => __('site.nav.service'), 'url' => route('service'), 'active' => request()->routeIs('*.service')],
+        ['label' => __('site.nav.dealers'), 'url' => route('dealers'), 'active' => request()->routeIs('*.dealers')],
     ];
     $ownerLinks = [
         ['label' => __('site.nav.manuals'), 'url' => route('manuals')],

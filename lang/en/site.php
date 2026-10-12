@@ -76,6 +76,8 @@ return [
         'until' => 'until :date',
         'empty' => 'Nothing here yet. Please check back later.',
         'more' => 'More posts',
+        'promotions_text' => 'Special offers on JAC cars from the official distributor in Tajikistan.',
+        'news_text' => 'JAC Motors Tajikistan news: new models, events and updates from the official distributor.',
     ],
 
     'dealers' => [

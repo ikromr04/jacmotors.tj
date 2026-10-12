@@ -62,6 +62,20 @@ if (! function_exists('site_text')) {
     }
 }
 
+if (! function_exists('locale_prefix')) {
+    /**
+     * URL prefix of a language: none for the default one, "tj" for Tajik, the language code otherwise.
+     */
+    function locale_prefix(string $locale): string
+    {
+        if ($locale === config('app.locale')) {
+            return '';
+        }
+
+        return config("app.locale_prefixes.{$locale}", $locale);
+    }
+}
+
 if (! function_exists('localized_url')) {
     /**
      * The current page URL in another locale.
@@ -69,9 +83,11 @@ if (! function_exists('localized_url')) {
     function localized_url(string $locale): string
     {
         $route = request()->route();
+        $name = (string) $route?->getName();
 
-        if ($route && $route->getName() && array_key_exists('locale', $route->parameters())) {
-            return route($route->getName(), array_merge($route->parameters(), ['locale' => $locale]));
+        // Public pages are named after their language: "tg.cars.show" → "cars.show" in $locale.
+        if (array_key_exists(Str::before($name, '.'), config('app.locales'))) {
+            return route(Str::after($name, '.'), [...$route->parameters(), 'locale' => $locale]);
         }
 
         return route('home', ['locale' => $locale]);
